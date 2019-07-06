@@ -1,9 +1,10 @@
 import datetime
 from datetime import timezone
 import csv
+import matplotlib.pyplot as plt
 
 def main() -> None:
-    tasks = getDataFromCsv()
+    tasks = get_data_from_csv()
     x = 0
     tasks_per_days_ago = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
     now_no_tz = datetime.datetime.now()
@@ -11,7 +12,7 @@ def main() -> None:
     # print("Delta start of day:", delta_start_of_day)
     # print("Adding to delta:", delta_start_of_day + datetime.timedelta(days = 1))
     for t in tasks:
-        for i in range(0, 8):
+        for i in range(8):
             if (type(t.completionDate) == type(datetime.datetime.now(timezone.utc))):
                 time_difference = datetime.datetime.now(timezone.utc) - t.completionDate
                 # print("time_difference: ", time_difference)
@@ -22,7 +23,18 @@ def main() -> None:
                     print(t)
     print("Totals: " + str(tasks_per_days_ago))
 
-def getDataFromCsv() -> list:
+    create_plots(tasks_per_days_ago)
+
+def create_plots(tasks_per_days_ago) -> None:
+    x = list(range(8))
+    y = []
+    for i in x:
+        y.append(tasks_per_days_ago[i])
+    plt.scatter(x, y)
+    plt.show()
+    
+    
+def get_data_from_csv() -> list:
     tasks = []
     with open('omnifocus-data/OmniFocus.csv') as csvDataFile:
         csvReader = csv.reader(csvDataFile)
