@@ -5,11 +5,22 @@ import csv
 def main() -> None:
     tasks = getDataFromCsv()
     x = 0
+    tasks_per_days_ago = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
+    now_no_tz = datetime.datetime.now()
+    delta_start_of_day = now_no_tz - datetime.datetime(now_no_tz.year, now_no_tz.month, now_no_tz.day, 0, 0, 0, 0)
+    # print("Delta start of day:", delta_start_of_day)
+    # print("Adding to delta:", delta_start_of_day + datetime.timedelta(days = 1))
     for t in tasks:
-        if (t.completionDate != "" and ((datetime.datetime.now(timezone.utc) - t.completionDate) < datetime.timedelta(days=7))):
-            print(t)
-            x = x + 1
-    print("Total: " + str(x))
+        for i in range(0, 8):
+            if (type(t.completionDate) == type(datetime.datetime.now(timezone.utc))):
+                time_difference = datetime.datetime.now(timezone.utc) - t.completionDate
+                # print("time_difference: ", time_difference)
+                # print("First time difference:", delta_start_of_day + datetime.timedelta(days=i))
+                # print("Second time difference:", (delta_start_of_day + datetime.timedelta(days=i + 1)))
+                if ((time_difference < delta_start_of_day + datetime.timedelta(days=i)) and (time_difference > delta_start_of_day + datetime.timedelta(days=i - 1))):
+                    tasks_per_days_ago[i] += 1
+                    print(t)
+    print("Totals: " + str(tasks_per_days_ago))
 
 def getDataFromCsv() -> list:
     tasks = []
