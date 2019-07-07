@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from sys import argv
 import argparse
 parser = argparse.ArgumentParser()
-
 def main() -> None:
     parser.add_argument("-p", "--path-to-csv", dest="path_to_csv", help="Path to your OmniFocus CSV export")
     parser.add_argument("-d", "--days", dest="days", help="The number of days you want to view", type=int)
@@ -39,11 +38,11 @@ def create_plots(tasks_per_days_ago, days) -> None:
     x = list(range(days))
     y = []
     for i in x:
-        y.append(tasks_per_days_ago[i]) 
+        y.append(tasks_per_days_ago[i])
     plt.scatter(x, y)
     plt.show()
-    
-    
+
+
 def get_data_from_csv(path) -> list:
     tasks = []
     with open(path) as csvDataFile:
@@ -53,8 +52,8 @@ def get_data_from_csv(path) -> list:
                 tasks.append(Task(row[0], row[1], row[2], row[3], row[4], row[6], row[8]))
     return tasks
 
-    
-    
+
+
 class Task:
     def __init__(self, taskID, taskType, name, status, project, startDate, completionDate) -> None:
         self.taskID = taskID
@@ -66,6 +65,6 @@ class Task:
         self.completionDate = datetime.datetime.strptime(completionDate, '%Y-%m-%d %H:%M:%S %z') if completionDate != "" else ""
     def __str__(self) -> str:
         return " ID: " + self.taskID + "\n taskType: " + self.taskType + "\n name: " + self.name + "\n status: " + self.status + "\n project: " + self.project + "\n status: " + self.status + "\n completionDate: " + str(self.completionDate)
-    
-    
+
+
 main()
