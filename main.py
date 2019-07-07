@@ -39,12 +39,12 @@ def main() -> None:
     create_plots(tasks_per_days_ago, days, goal)
 
 def create_plots(tasks_per_days_ago, days, goal) -> None:
-    x = list(range(days))
-    y = []
-    for i in x:
-        y.append(tasks_per_days_ago[i])
-    plt.axhline(y=goal)
-    plt.scatter(x, y)
+    # y = []
+    for i in list(range(days)):
+        color = 'b' if tasks_per_days_ago[i] >= goal else 'r'
+        plt.scatter(i, tasks_per_days_ago[i], color = color)
+        # y.append(tasks_per_days_ago[i])
+    plt.axhline(y=goal, color='r', linestyle='--')
     plt.show()
 
 
