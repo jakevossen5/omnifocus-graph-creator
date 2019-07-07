@@ -1,3 +1,4 @@
 .DS_Store
 omnifocus-data/
 .mypy_cache/
+OmniFocus\.csv

@@ -6,7 +6,7 @@ from sys import argv
 import argparse
 parser = argparse.ArgumentParser()
 def main() -> None:
-    parser.add_argument("-p", "--path-to-csv", dest="path_to_csv", help="Path to your OmniFocus CSV export")
+    parser.add_argument("-p", "--path-to-csv", dest="path_to_csv", default="OmniFocus.csv", help="Path to your OmniFocus CSV export default is 'OmniFocus.csv'")
     parser.add_argument("-d", "--days", dest="days", help="The number of days you want to view", type=int)
     args = parser.parse_args()
     path_to_csv = args.path_to_csv
