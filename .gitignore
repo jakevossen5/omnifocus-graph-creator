@@ -2,3 +2,5 @@
 omnifocus-data/
 .mypy_cache/
 OmniFocus\.csv
+
+omnifocus-graph-creator
