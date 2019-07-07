@@ -8,10 +8,13 @@ parser = argparse.ArgumentParser()
 def main() -> None:
     parser.add_argument("-p", "--path-to-csv", dest="path_to_csv", default="OmniFocus.csv", help="Path to your OmniFocus CSV export default is 'OmniFocus.csv'")
     parser.add_argument("-d", "--days", dest="days", default=7, help="The number of days you want to view. Default is 7", type=int)
+    parser.add_argument("-g", "--goal", dest="goal", default=10, help="Goal number of tasks for each day. Draws horizontal line on graph")
     args = parser.parse_args()
     path_to_csv = args.path_to_csv
     days = args.days + 1 # add 1 to be inclusive
+    goal = args.goal
     tasks = get_data_from_csv(path_to_csv)
+
     tasks_per_days_ago = { }
     for i in range(days): # Do this as a lambda somehow?
         tasks_per_days_ago[i] = 0
@@ -30,15 +33,17 @@ def main() -> None:
                 if ((time_difference < delta_start_of_day + datetime.timedelta(days=i)) and (time_difference > delta_start_of_day + datetime.timedelta(days=i - 1))):
                     tasks_per_days_ago[i] += 1
                     # print(t)
+
     print("Totals: " + str(tasks_per_days_ago))
 
-    create_plots(tasks_per_days_ago, days)
+    create_plots(tasks_per_days_ago, days, goal)
 
-def create_plots(tasks_per_days_ago, days) -> None:
+def create_plots(tasks_per_days_ago, days, goal) -> None:
     x = list(range(days))
     y = []
     for i in x:
         y.append(tasks_per_days_ago[i])
+    plt.axhline(y=goal)
     plt.scatter(x, y)
     plt.show()
 
