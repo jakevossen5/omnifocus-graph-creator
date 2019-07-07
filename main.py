@@ -13,6 +13,7 @@ def main() -> None:
     path_to_csv = args.path_to_csv
     days = args.days + 1 # add 1 to be inclusive
     goal = args.goal
+
     tasks = get_data_from_csv(path_to_csv)
 
     tasks_per_days_ago = { }
@@ -21,15 +22,10 @@ def main() -> None:
 
     now_no_tz = datetime.datetime.now()
     delta_start_of_day = now_no_tz - datetime.datetime(now_no_tz.year, now_no_tz.month, now_no_tz.day, 0, 0, 0, 0)
-    # print("Delta start of day:", delta_start_of_day)
-    # print("Adding to delta:", delta_start_of_day + datetime.timedelta(days = 1))
     for t in tasks:
         for i in range(days):
             if (type(t.completionDate) == type(datetime.datetime.now(timezone.utc))):
                 time_difference = datetime.datetime.now(timezone.utc) - t.completionDate
-                # print("time_difference: ", time_difference)
-                # print("First time difference:", delta_start_of_day + datetime.timedelta(days=i))
-                # print("Second time difference:", (delta_start_of_day + datetime.timedelta(days=i + 1)))
                 if ((time_difference < delta_start_of_day + datetime.timedelta(days=i)) and (time_difference > delta_start_of_day + datetime.timedelta(days=i - 1))):
                     tasks_per_days_ago[i] += 1
                     # print(t)
@@ -70,6 +66,5 @@ class Task:
         self.completionDate = datetime.datetime.strptime(completionDate, '%Y-%m-%d %H:%M:%S %z') if completionDate != "" else ""
     def __str__(self) -> str:
         return " ID: " + self.taskID + "\n taskType: " + self.taskType + "\n name: " + self.name + "\n status: " + self.status + "\n project: " + self.project + "\n status: " + self.status + "\n completionDate: " + str(self.completionDate)
-
 
 main()
