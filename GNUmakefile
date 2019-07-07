@@ -1,4 +1,4 @@
-prepare-for-install: omnifocus-graph-creator
+prepare-for-install: omnifocusgraphcreator
 
-omnifocus-graph-creator: omnifocus-graph-creator.py
-	cp omnifocus-graph-creator.py omnifocus-graph-creator
+omnifocusgraphcreator: omnifocusgraphcreator.py
+	cp omnifocusgraphcreator.py omnifocusgraphcreator
