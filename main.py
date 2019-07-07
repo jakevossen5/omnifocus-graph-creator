@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 import datetime
 from datetime import timezone
 import csv
