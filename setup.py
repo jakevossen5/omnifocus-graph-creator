@@ -5,6 +5,7 @@ setup(
    version='1.0.6',
    description='Create graphs to analyze your OmniFocus data',
    author='Jake Vossen',
+    scripts=['bin/omnifocus-graph-creator'],
    author_email='jake@vossen.dev',
    packages=['omnifocus-graph-creator'],  #same as name
    install_requires=['matplotlib'], #external packages as dependencies
