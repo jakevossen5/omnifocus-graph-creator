@@ -3,7 +3,7 @@ omnifocus-data/
 .mypy_cache/
 OmniFocus\.csv
 
-
+bin/
 
 omnifocus_graph_creator\.egg-info/
 
