@@ -4,3 +4,9 @@ omnifocus-data/
 OmniFocus\.csv
 
 
+
+omnifocus_graph_creator\.egg-info/
+
+dist/
+
+build/lib/omnifocus-graph-creator/
