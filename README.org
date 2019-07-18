@@ -2,4 +2,27 @@
 
 This is a work in progress project I have. The goal is to be able to
 make graphs based on the number of tasks I have completed in omnifocus
-overtime. 
+overtime.
+
+* Installing
+
+You can install with [[https://brew.sh/][Homebrew]]:
+#+BEGIN_SRC sh:
+brew install jakevossen5/taps/omnifocus-graph-creator
+#+END_SRC
+
+* Usage
+
+#+BEGIN_SRC sh:
+$ omnifocus-graph-creator --help
+usage: omnifocus-graph-creator [-h] [-p PATH_TO_CSV] [-d DAYS] [-g GOAL]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -p PATH_TO_CSV, --path-to-csv PATH_TO_CSV
+                        Path to your OmniFocus CSV export default is
+                        'OmniFocus.csv'
+  -d DAYS, --days DAYS  The number of days you want to view. Default is 7
+  -g GOAL, --goal GOAL  Goal number of tasks for each day. Draws horizontal
+                        line on graph
+#+END_SRC
