@@ -13,6 +13,25 @@ brew install jakevossen5/taps/omnifocus-graph-creator
 
 * Usage
 
+** Getting the Omnifocus CSV
+
+This utility currently depends on a manual CSV export. Here are the
+steps to get that
+
+1. Open Omnifocus
+2. Go to projects
+3. Click on the eye, and select "Show All"
+4. Select all of the projects on the left
+5. File -> Export -> Select Comma Separated Values (CSV) at the bottom
+
+Then run =omnifocus-graph-creator= in the directory you exported the
+CSV to, or specify =--path-to-csv= to specify where the file is manually.
+
+** Full arguments
+
+You can add more arguments to specify the details of the output. For
+details, run =omnifocus-graph-creator --help=.
+
 #+BEGIN_SRC:
 $ omnifocus-graph-creator --help
 usage: omnifocus-graph-creator [-h] [-p PATH_TO_CSV] [-d DAYS] [-g GOAL]
