@@ -37,14 +37,17 @@ details, run =omnifocus-graph-creator --help=.
 
 #+BEGIN_SRC:
 $ omnifocus-graph-creator --help
-usage: omnifocus-graph-creator [-h] [-p PATH_TO_CSV] [-d DAYS] [-g GOAL]
+usage: omnifocus-graph-creator [-h] [-p PATH_TO_CSV] [-d DAYS] [-g GOAL] [-e EXPORT_PATH]
 
 optional arguments:
   -h, --help            show this help message and exit
   -p PATH_TO_CSV, --path-to-csv PATH_TO_CSV
-                        Path to your OmniFocus CSV export default is
+                        path to your OmniFocus CSV export default is
                         'OmniFocus.csv'
-  -d DAYS, --days DAYS  The number of days you want to view. Default is 7
-  -g GOAL, --goal GOAL  Goal number of tasks for each day. Draws horizontal
+  -d DAYS, --days DAYS  the number of days you want to view. Default is 7
+  -g GOAL, --goal GOAL  goal number of tasks for each day. Draws horizontal
                         line on graph
+  -e EXPORT_PATH, --export-path EXPORT_PATH
+                        path of the png output graph (with file extension).
+                        Default is None (just show graph).
 #+END_SRC
