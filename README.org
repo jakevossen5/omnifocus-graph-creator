@@ -1,8 +1,7 @@
 #+TITLE: omnifocus-graph-creator
 
-This is a work in progress project I have. The goal is to be able to
-make graphs based on the number of tasks I have completed in omnifocus
-overtime.
+Command line utility that lets you analyze the number of tasks you
+have completed in [[https://www.omnigroup.com/omnifocus][Omnifocus]] over time.
 
 * Example
 
