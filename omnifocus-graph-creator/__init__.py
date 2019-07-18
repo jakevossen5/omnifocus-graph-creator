@@ -7,13 +7,15 @@ from sys import argv
 import argparse
 parser = argparse.ArgumentParser()
 def main() -> None:
-    parser.add_argument("-p", "--path-to-csv", dest="path_to_csv", default="OmniFocus.csv", help="Path to your OmniFocus CSV export default is 'OmniFocus.csv'")
-    parser.add_argument("-d", "--days", dest="days", default=7, help="The number of days you want to view. Default is 7", type=int)
-    parser.add_argument("-g", "--goal", dest="goal", default=10, help="Goal number of tasks for each day. Draws horizontal line on graph", type=int)
+    parser.add_argument("-p", "--path-to-csv", dest="path_to_csv", default="OmniFocus.csv", help="path to your OmniFocus CSV export default is 'OmniFocus.csv'")
+    parser.add_argument("-d", "--days", dest="days", default=7, help="the number of days you want to view. Default is 7", type=int)
+    parser.add_argument("-g", "--goal", dest="goal", default=10, help="goal number of tasks for each day. Draws horizontal line on graph", type=int)
+    parser.add_argument("-e", "--export-path", dest="export_path", default=None, help="path of the png output graph (with file extension). Default is None (just show graph).", type=str)
     args = parser.parse_args()
     path_to_csv = args.path_to_csv
     days = args.days + 1 # add 1 to be inclusive
     goal = args.goal
+    export_path = args.export_path
 
     tasks = get_data_from_csv(path_to_csv)
 
@@ -31,18 +33,23 @@ def main() -> None:
                     tasks_per_days_ago[i] += 1
                     # print(t)
 
-    print("Totals: " + str(tasks_per_days_ago))
+    # print("Totals: " + str(tasks_per_days_ago))
+    create_plots(tasks_per_days_ago, days, goal, export_path)
 
-    create_plots(tasks_per_days_ago, days, goal)
-
-def create_plots(tasks_per_days_ago, days, goal) -> None:
+def create_plots(tasks_per_days_ago: dict, days: int, goal: int, export_path: str) -> None:
     # y = []
     for i in list(range(days)):
         color = 'b' if tasks_per_days_ago[i] >= goal else 'r'
         plt.scatter(i, tasks_per_days_ago[i], color = color)
         # y.append(tasks_per_days_ago[i])
     plt.axhline(y=goal, color='r', linestyle='--')
-    plt.show()
+
+    # print("export path: " + export_path)
+
+    if (export_path is None):
+        plt.show()
+    else:
+        plt.savefig(export_path)
 
 
 def get_data_from_csv(path) -> list:
