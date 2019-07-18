@@ -13,7 +13,7 @@ brew install jakevossen5/taps/omnifocus-graph-creator
 
 * Usage
 
-#+BEGIN_SRC sh:
+#+BEGIN_SRC:
 $ omnifocus-graph-creator --help
 usage: omnifocus-graph-creator [-h] [-p PATH_TO_CSV] [-d DAYS] [-g GOAL]
 
