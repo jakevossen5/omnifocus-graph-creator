@@ -4,6 +4,10 @@ This is a work in progress project I have. The goal is to be able to
 make graphs based on the number of tasks I have completed in omnifocus
 overtime.
 
+* Example
+
+[[example.png]]
+
 * Installing
 
 You can install with [[https://brew.sh/][Homebrew]]:
