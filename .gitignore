@@ -10,3 +10,19 @@ omnifocus_graph_creator\.egg-info/
 dist/
 
 build/lib/omnifocus-graph-creator/
+
+
+#Added by cargo
+#
+#already existing elements are commented out
+
+/target
+**/*.rs.bk
+
+
+#Added by cargo
+#
+#already existing elements are commented out
+
+#/target
+#**/*.rs.bk
