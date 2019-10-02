@@ -1,30 +1,27 @@
 use std::error::Error;
 use std::io;
-use std::process;
 
 use csv::{ReaderBuilder, StringRecord};
 
-use serde::Deserialize;
-
-#[derive(Clone,Debug, Deserialize)]
+#[derive(Debug)]
 struct Task {
-    TaskID: String,
-    Type: Option<String>,
-    Name: Option<String>,
-    Status: Option<String>,
-    Project: Option<String>,
-    Context: Option<String>,
-    StartDate: Option<String>,
-    DueDate: Option<String>,
-    CompletionDate: Option<String>,
-    Duration: Option<String>,
-    Flagged: Option<u8>,
-    Notes: Option<String>,
-    Tags: Option<String>
+    task_id: String,
+    type_of_task: Option<String>,
+    name: Option<String>,
+    status: Option<String>,
+    project: Option<String>,
+    context: Option<String>,
+    start_date: Option<String>,
+    due_date: Option<String>,
+    completion_date: Option<String>,
+    duration: Option<String>,
+    flagged: Option<u8>,
+    notes: Option<String>,
+    tags: Option<String>
 }
 
 
-fn getRecords() -> Result<(), Box<Error>> {
+fn get_records() -> Result<(), Box<dyn Error>> {
     // Build the CSV reader and iterate over each record.
     let mut rdr = ReaderBuilder::new()
         .flexible(true)
@@ -35,7 +32,7 @@ fn getRecords() -> Result<(), Box<Error>> {
         .collect::<Result<Vec<StringRecord>, csv::Error>>()?;
 
     for r in records {
-        let task: Task = createTask(r);
+        let task: Task = create_task(r);
         println!("{:?}", task)
     }
     // println!("{:?}", records);
@@ -43,30 +40,26 @@ fn getRecords() -> Result<(), Box<Error>> {
     // Ok(records)
 }
 
-fn createTask(r: StringRecord) -> Task {
+fn create_task(r: StringRecord) -> Task {
 
     let t: Task = Task{
-        TaskID: r[0].to_string(),
-        Type: r.get(1).map(|s| s.to_owned()),
-        Name: r.get(2).map(|s| s.to_owned()),
-        Status: r.get(3).map(|s| s.to_owned()),
-        Project: r.get(4).map(|s| s.to_owned()),
-        Context: r.get(5).map(|s| s.to_owned()),
-        StartDate: r.get(6).map(|s| s.to_owned()),
-        DueDate: r.get(7).map(|s| s.to_owned()),
-        CompletionDate: r.get(8).map(|s| s.to_owned()),
-        Duration: r.get(9).map(|s| s.to_owned()),
-        Flagged: r.get(10).map(|s| s.parse().unwrap()),
-        Notes: r.get(11).map(|s| s.to_owned()),
-        Tags: r.get(12).map(|s| s.to_owned())
+        task_id: r[0].to_string(),
+        type_of_task: r.get(1).map(|s| s.to_owned()),
+        name: r.get(2).map(|s| s.to_owned()),
+        status: r.get(3).map(|s| s.to_owned()),
+        project: r.get(4).map(|s| s.to_owned()),
+        context: r.get(5).map(|s| s.to_owned()),
+        start_date: r.get(6).map(|s| s.to_owned()),
+        due_date: r.get(7).map(|s| s.to_owned()),
+        completion_date: r.get(8).map(|s| s.to_owned()),
+        duration: r.get(9).map(|s| s.to_owned()),
+        flagged: r.get(10).map(|s| s.parse().unwrap()),
+        notes: r.get(11).map(|s| s.to_owned()),
+        tags: r.get(12).map(|s| s.to_owned())
     };
     return t;
 }
 
 fn main() {
-    let records_result = getRecords();
-    let records = records_result.unwrap(); // TODO probably want some error handling
-    // for r in records {
-    //     let task: Task = r.deserialize(None);
-    // }
+    get_records();
 }
