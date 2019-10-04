@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::io;
+use std::collections::HashMap;
 
 use csv::{ReaderBuilder, StringRecord};
 
@@ -21,7 +22,7 @@ struct Task {
 }
 
 
-fn get_records() -> Result<(), Box<dyn Error>> {
+fn get_records() -> Result<Vec<Task>, Box<dyn Error>> {
     // Build the CSV reader and iterate over each record.
     let mut rdr = ReaderBuilder::new()
         .flexible(true)
@@ -31,12 +32,13 @@ fn get_records() -> Result<(), Box<dyn Error>> {
         .records()
         .collect::<Result<Vec<StringRecord>, csv::Error>>()?;
 
+    let mut tasks: Vec<Task> = Vec::new();
+
     for r in records {
-        let task: Task = create_task(r);
-        println!("{:?}", task)
+        tasks.push(create_task(r))
     }
     // println!("{:?}", records);
-    Ok(())
+    Ok(tasks)
     // Ok(records)
 }
 
@@ -61,5 +63,18 @@ fn create_task(r: StringRecord) -> Task {
 }
 
 fn main() {
-    get_records();
+    let tasks_result: Result<Vec<Task>, Box<dyn Error>> = get_records();
+    if !tasks_result.is_ok() {
+        println!("Tasks are not okay!");
+    } else {
+        let tasks: Vec<Task> = tasks_result.unwrap();
+    }
+
+
+    let mut days_ago_to_tasks: HashMap<i64, Vec<Task>> = HashMap::new();
+    // example time: 2019-06-14 02:54:47 +0000
+    for t in tasks {
+        
+    }
+
 }
