@@ -77,14 +77,9 @@ fn main() {
     let mut days_ago_to_tasks: HashMap<i64, Vec<Task>> = HashMap::new();
     // example time: 2019-06-14 02:54:47 +0000
     // Should be this format: %Y-%m-%d %H:%M:%S %z
+
+    let utc_now: DateTime<Utc> = Utc::now();
     for t in tasks {
-
-        // No way around it, this section of code is going to be ugly.
-        // Going to manually parse the date by looking at multiplying it by duration to get a number of seconds.
-
-        let mut current_seconds: i64 = 0;
-
-        // println!("{:?}", t);
 
         if t.completion_date.is_some() {
             let t_completion_date: String = t.completion_date.unwrap();
@@ -95,9 +90,20 @@ fn main() {
             }
             // date_dash_seperated = Vec<&str> = date.spli
 
-            let dt = DateTime::parse_from_str(&t_completion_date, "%Y-%m-%d %H:%M:%S %z");
+            let dt_result = DateTime::parse_from_str(&t_completion_date, "%Y-%m-%d %H:%M:%S %z");
+            let dt: DateTime<FixedOffset>;
+            if dt_result.is_err() {
+                println!("there was an error parsing the completed date: {:?} ", dt_result.err());
+                break;
+            } else {
+                dt = dt_result.unwrap();
+            }
             println!("dt       : {:?}", t_completion_date);
             println!("dt object: {:?}", dt);
+
+            let time_diff = utc_now.signed_duration_since(dt);
+            println!("Time diff: {:?}" , time_diff);
+
 
         }
 
