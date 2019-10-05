@@ -3,6 +3,7 @@ use std::io;
 use std::collections::HashMap;
 
 use csv::{ReaderBuilder, StringRecord};
+use chrono::prelude::*;
 
 #[derive(Debug)]
 struct Task {
@@ -75,6 +76,7 @@ fn main() {
 
     let mut days_ago_to_tasks: HashMap<i64, Vec<Task>> = HashMap::new();
     // example time: 2019-06-14 02:54:47 +0000
+    // Should be this format: %Y-%m-%d %H:%M:%S %z
     for t in tasks {
 
         // No way around it, this section of code is going to be ugly.
@@ -91,28 +93,12 @@ fn main() {
             if t_completion_date == String::from("") {
                 break;
             }
-
-            println!("t_completion_date: {}", t_completion_date);
-            // let space_seperateed: Vec<&str> = t_completion_date.split_terminator(' ').collect();
-            let year: u16 = t_completion_date[..4].to_string().parse::<u16>().unwrap();
-            let month: u8 = t_completion_date[5..7].to_string().parse::<u8>().unwrap();
-            let day: u8 = t_completion_date[8..10].to_string().parse::<u8>().unwrap();
-
-            let hours: u8 = t_completion_date[11..13].to_string().parse::<u8>().unwrap();
-            let mins: u8 = t_completion_date[14..16].to_string().parse::<u8>().unwrap();
-            let secs: u8 = t_completion_date[17..19].to_string().parse::<u8>().unwrap();
-
-            // let hour:
-
-
-            println!("year: {}", year);
-            println!("month: {}", month);
-            println!("day: {}", day);
-
-            println!("hours {}", hours);
-            println!("mins {}", mins);
-            println!("secs {}", secs);
             // date_dash_seperated = Vec<&str> = date.spli
+
+            let dt = DateTime::parse_from_str(&t_completion_date, "%Y-%m-%d %H:%M:%S %z");
+            println!("dt       : {:?}", t_completion_date);
+            println!("dt object: {:?}", dt);
+
         }
 
     }
