@@ -64,17 +64,57 @@ fn create_task(r: StringRecord) -> Task {
 
 fn main() {
     let tasks_result: Result<Vec<Task>, Box<dyn Error>> = get_records();
+    let tasks: Vec<Task>;
     if !tasks_result.is_ok() {
         println!("Tasks are not okay!");
+        return;
     } else {
-        let tasks: Vec<Task> = tasks_result.unwrap();
+        tasks = tasks_result.unwrap();
     }
 
 
     let mut days_ago_to_tasks: HashMap<i64, Vec<Task>> = HashMap::new();
     // example time: 2019-06-14 02:54:47 +0000
     for t in tasks {
-        
+
+        // No way around it, this section of code is going to be ugly.
+        // Going to manually parse the date by looking at multiplying it by duration to get a number of seconds.
+
+        let mut current_seconds: i64 = 0;
+
+        // println!("{:?}", t);
+
+        if t.completion_date.is_some() {
+            let t_completion_date: String = t.completion_date.unwrap();
+
+            // it would be nice to put this in the loop above, but was getting issues with borrowing.
+            if t_completion_date == String::from("") {
+                break;
+            }
+
+            println!("t_completion_date: {}", t_completion_date);
+            // let space_seperateed: Vec<&str> = t_completion_date.split_terminator(' ').collect();
+            let year: u16 = t_completion_date[..4].to_string().parse::<u16>().unwrap();
+            let month: u8 = t_completion_date[5..7].to_string().parse::<u8>().unwrap();
+            let day: u8 = t_completion_date[8..10].to_string().parse::<u8>().unwrap();
+
+            let hours: u8 = t_completion_date[11..13].to_string().parse::<u8>().unwrap();
+            let mins: u8 = t_completion_date[14..16].to_string().parse::<u8>().unwrap();
+            let secs: u8 = t_completion_date[17..19].to_string().parse::<u8>().unwrap();
+
+            // let hour:
+
+
+            println!("year: {}", year);
+            println!("month: {}", month);
+            println!("day: {}", day);
+
+            println!("hours {}", hours);
+            println!("mins {}", mins);
+            println!("secs {}", secs);
+            // date_dash_seperated = Vec<&str> = date.spli
+        }
+
     }
 
 }
