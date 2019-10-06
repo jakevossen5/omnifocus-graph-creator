@@ -1,11 +1,16 @@
+extern crate time;
 use std::error::Error;
 use std::io;
 use std::collections::HashMap;
+use std::collections::HashSet;
+use time::Duration;
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
 
 use csv::{ReaderBuilder, StringRecord};
 use chrono::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Hash, Eq)]
 struct Task {
     task_id: String,
     type_of_task: Option<String>,
@@ -20,6 +25,12 @@ struct Task {
     flagged: Option<u8>,
     notes: Option<String>,
     tags: Option<String>
+}
+
+impl PartialEq for Task {
+    fn eq(&self, other: &Self) -> bool {
+        return self.task_id == other.task_id;
+    }
 }
 
 
@@ -74,18 +85,21 @@ fn main() {
     }
 
 
-    let mut days_ago_to_tasks: HashMap<i64, Vec<Task>> = HashMap::new();
+
     // example time: 2019-06-14 02:54:47 +0000
     // Should be this format: %Y-%m-%d %H:%M:%S %z
 
     let utc_now: DateTime<Utc> = Utc::now();
+
+    let days_requested: i32 = 7; // TODO: get this value from the user input / command line
+    let mut days_ago_to_tasks: HashMap<i32, HashSet<Task>> = HashMap::new();
     for t in tasks {
 
         if t.completion_date.is_some() {
-            let t_completion_date: String = t.completion_date.unwrap();
+            let t_completion_date: &String = &t.completion_date.unwrap();
 
             // it would be nice to put this in the loop above, but was getting issues with borrowing.
-            if t_completion_date == String::from("") {
+            if *t_completion_date == String::from("") {
                 break;
             }
             // date_dash_seperated = Vec<&str> = date.spli
@@ -101,10 +115,25 @@ fn main() {
             println!("dt       : {:?}", t_completion_date);
             println!("dt object: {:?}", dt);
 
-            let time_diff = utc_now.signed_duration_since(dt);
+            // Currently requires the time package, but DateTime said they are going to move to std time soon
+            let mut time_diff: std::time::Duration = utc_now.signed_duration_since(dt).to_std().unwrap();
             println!("Time diff: {:?}" , time_diff);
 
+            // 86400 seconds in a day
 
+            let mut days_ago_counter: i32 = 0;
+
+            while time_diff > std::time::Duration::from_secs(86400) {
+                time_diff = time_diff - std::time::Duration::from_secs(86400);
+                days_ago_counter = days_ago_counter + 1;
+            }
+
+            let days_ago: i32 = days_ago_counter;
+
+            if !days_ago_to_tasks.contains_key(&days_ago.to_owned()) {
+                days_ago_to_tasks.insert(days_ago, HashSet::new());
+            }
+            &days_ago_to_tasks.get(&days_ago).unwrap().insert(t);
         }
 
     }
