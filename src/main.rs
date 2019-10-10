@@ -34,7 +34,7 @@ impl PartialEq for Task {
 }
 
 
-fn get_records() -> Result<Vec<Task>, Box<dyn Error>> {
+fn get_records() -> Result<HashSet<Task>, Box<dyn Error>> {
     // Build the CSV reader and iterate over each record.
     let mut rdr = ReaderBuilder::new()
         .flexible(true)
@@ -44,10 +44,10 @@ fn get_records() -> Result<Vec<Task>, Box<dyn Error>> {
         .records()
         .collect::<Result<Vec<StringRecord>, csv::Error>>()?;
 
-    let mut tasks: Vec<Task> = Vec::new();
+    let mut tasks: HashSet<Task> = HashSet::new();
 
     for r in records {
-        tasks.push(create_task(r))
+        tasks.insert(create_task(r));
     }
     // println!("{:?}", records);
     Ok(tasks)
@@ -75,8 +75,8 @@ fn create_task(r: StringRecord) -> Task {
 }
 
 fn main() {
-    let tasks_result: Result<Vec<Task>, Box<dyn Error>> = get_records();
-    let tasks: Vec<Task>;
+    let tasks_result: Result<HashSet<Task>, Box<dyn Error>> = get_records();
+    let tasks: HashSet<Task>;
     if !tasks_result.is_ok() {
         println!("Tasks are not okay!");
         return;
@@ -89,17 +89,22 @@ fn main() {
     // example time: 2019-06-14 02:54:47 +0000
     // Should be this format: %Y-%m-%d %H:%M:%S %z
 
-    let utc_now: DateTime<Utc> = Utc::now();
+
 
     let days_requested: i32 = 7; // TODO: get this value from the user input / command line
-    let mut days_ago_to_tasks: HashMap<i32, HashSet<Task>> = HashMap::new();
-    for t in tasks {
+    let mut days_ago_to_tasks: HashMap<i32, HashSet<&Task>> = HashMap::new();
 
+}
+
+fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, HashSet<&'static Task>> {
+    let mut map: HashMap<i32, HashSet<&Task>> = HashMap::new();
+    let utc_now: DateTime<Utc> = Utc::now();
+    for t in tasks {
         if t.completion_date.is_some() {
-            let t_completion_date: &String = &t.completion_date.unwrap();
+            let t_completion_date: String = t.completion_date.unwrap();
 
             // it would be nice to put this in the loop above, but was getting issues with borrowing.
-            if *t_completion_date == String::from("") {
+            if t_completion_date == String::from("") {
                 break;
             }
             // date_dash_seperated = Vec<&str> = date.spli
@@ -130,12 +135,12 @@ fn main() {
 
             let days_ago: i32 = days_ago_counter;
 
-            if !days_ago_to_tasks.contains_key(&days_ago.to_owned()) {
-                days_ago_to_tasks.insert(days_ago, HashSet::new());
+            if !map.contains_key(&days_ago) {
+                map.insert(days_ago, HashSet::new());
             }
-            &days_ago_to_tasks.get(&days_ago).unwrap().insert(t);
+            let mut current_set: &HashSet<&Task> = map.get(&days_ago).unwrap();
+            current_set.insert(&t);
         }
-
     }
-
+    return map;
 }
