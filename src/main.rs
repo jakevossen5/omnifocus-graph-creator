@@ -91,16 +91,18 @@ fn main() {
 
     println!("tasks size is {}", tasks.len());
 
-    let days_requested: i32 = 7; // TODO: get this value from the user input / command line
+    let days_requested: u32 = 7; // TODO: get this value from the user input / command line
     let mut days_ago_to_task_count: HashMap<u32, u32> = HashMap::new();
     days_ago_to_task_count = map_tasks_to_days_ago(tasks);
 
     let points: Vec<u32> = get_points(days_ago_to_task_count, days_requested);
 
-    draw_data(points, 10);
+    let max_point: u32 = get_max_point(&points);
+
+    draw_data(points, max_point, days_requested);
 }
 
-fn get_points(map: HashMap<u32, u32>, days_requested: i32) -> Vec<u32> {
+fn get_points(map: HashMap<u32, u32>, days_requested: u32) -> Vec<u32> {
     let mut points: Vec<u32> = Vec::new();
     for x in 0..days_requested {
         for j in 0..(*map.get(&(x as u32)).unwrap_or(&0)) {
@@ -110,7 +112,7 @@ fn get_points(map: HashMap<u32, u32>, days_requested: i32) -> Vec<u32> {
     return points;
 }
 
-fn draw_data(points: Vec<u32>, max_point: i32) -> Result<(), Box<dyn std::error::Error>> {
+fn draw_data(points: Vec<u32>, max_point: u32, days_ago: u32) -> Result<(), Box<dyn std::error::Error>> {
         let root =
         BitMapBackend::new("stats.png", (640, 480)).into_drawing_area();
 
@@ -121,7 +123,7 @@ fn draw_data(points: Vec<u32>, max_point: i32) -> Result<(), Box<dyn std::error:
         .y_label_area_size(40)
         .margin(5)
         // .caption("Histogram Test", ("Arial", 50.0).into_font()) // TODO, custom title
-        .build_ranged(0u32..7u32, 0u32..50u32)?;
+        .build_ranged(0u32..days_ago, 0u32..max_point)?;
 
     chart
         .configure_mesh()
