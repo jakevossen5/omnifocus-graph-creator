@@ -120,25 +120,24 @@ fn draw_data(points: Vec<u32>, max_point: i32) -> Result<(), Box<dyn std::error:
         .x_label_area_size(35)
         .y_label_area_size(40)
         .margin(5)
-        .caption("Histogram Test", ("Arial", 50.0).into_font())
-        .build_ranged(0u32..50u32, 0u32..50u32)?;
+        // .caption("Histogram Test", ("Arial", 50.0).into_font()) // TODO, custom title
+        .build_ranged(0u32..7u32, 0u32..50u32)?;
 
     chart
         .configure_mesh()
         .disable_x_mesh()
         .line_style_1(&WHITE.mix(0.3))
         .x_label_offset(30)
-        .y_desc("Count")
-        .x_desc("Bucket")
+        .y_desc("Tasks Completed")
+        .x_desc("Days Ago")
         .axis_desc_style(("Arial", 15).into_font())
         .draw()?;
 
     let data = points;
 
-    println!("Data: {:?}", data);
     chart.draw_series(
         Histogram::vertical(&chart)
-            .style(RED.mix(0.5).filled())
+            .style(BLUE.mix(1.0).filled())
             .data(data.iter().map(|x: &u32| (*x, 1))),
     )?;
 
