@@ -95,9 +95,9 @@ fn main() {
 
     println!("len of days ago to task count: {}", days_ago_to_task_count.len());
 
-    for (days, count) in &days_ago_to_task_count {
-        println!("{}: {}", days, count);
-    }
+    // for (days, count) in &days_ago_to_task_count {
+        // println!("{}: {}", days, count);
+    // }
 }
 
 fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, i32> {
@@ -105,7 +105,6 @@ fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, i32> {
     let utc_now: DateTime<Utc> = Utc::now();
     println!("tasks size in map fn is {}", tasks.len());
     for t in tasks.iter() {
-        println!("I am doing a thing");
         if t.completion_date.is_some() {
 
             // let t_completion_date: &mut String = &mut t.completion_date.unwrap();
@@ -123,12 +122,12 @@ fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, i32> {
                 } else {
                     dt = dt_result.unwrap();
                 }
-                println!("dt       : {:?}", t_completion_date);
-                println!("dt object: {:?}", dt);
+                // println!("dt       : {:?}", t_completion_date);
+                // println!("dt object: {:?}", dt);
 
                 // Currently requires the time package, but DateTime said they are going to move to std time soon
                 let mut time_diff: std::time::Duration = utc_now.signed_duration_since(dt).to_std().unwrap();
-                println!("Time diff: {:?}" , time_diff);
+                // println!("Time diff: {:?}" , time_diff);
 
                 // 86400 seconds in a day
 
