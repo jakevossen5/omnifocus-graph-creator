@@ -10,7 +10,7 @@ use std::hash::{Hash, Hasher};
 use csv::{ReaderBuilder, StringRecord};
 use chrono::prelude::*;
 
-#[derive(Debug, Hash, Eq)]
+#[derive(Debug, Hash, Eq, Clone)]
 struct Task {
     task_id: String,
     type_of_task: Option<String>,
@@ -84,27 +84,24 @@ fn main() {
         tasks = tasks_result.unwrap();
     }
 
-
-
     // example time: 2019-06-14 02:54:47 +0000
     // Should be this format: %Y-%m-%d %H:%M:%S %z
 
-
-
     let days_requested: i32 = 7; // TODO: get this value from the user input / command line
-    let mut days_ago_to_tasks: HashMap<i32, HashSet<&Task>> = HashMap::new();
+    let mut days_ago_to_tasks: HashMap<i32, HashSet<Task>> = HashMap::new();
 
 }
 
-fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, HashSet<&'static Task>> {
-    let mut map: HashMap<i32, HashSet<&Task>> = HashMap::new();
+fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, i32> {
+    let mut map: HashMap<i32, i32> = HashMap::new();
     let utc_now: DateTime<Utc> = Utc::now();
     for t in tasks {
         if t.completion_date.is_some() {
-            let t_completion_date: String = t.completion_date.unwrap();
+
+            let t_completion_date: &mut String = &mut t.completion_date.unwrap();
 
             // it would be nice to put this in the loop above, but was getting issues with borrowing.
-            if t_completion_date == String::from("") {
+            if *t_completion_date == String::from("") {
                 break;
             }
             // date_dash_seperated = Vec<&str> = date.spli
@@ -136,10 +133,10 @@ fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, HashSet<&'static 
             let days_ago: i32 = days_ago_counter;
 
             if !map.contains_key(&days_ago) {
-                map.insert(days_ago, HashSet::new());
+                map.insert(days_ago, 0);
             }
-            let mut current_set: &HashSet<&Task> = map.get(&days_ago).unwrap();
-            current_set.insert(&t);
+            let current_count: &mut i32 = map.get_mut(&days_ago).unwrap();
+            *current_count += 1;
         }
     }
     return map;
