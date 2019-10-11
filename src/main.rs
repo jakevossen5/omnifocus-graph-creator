@@ -38,7 +38,7 @@ fn get_records() -> Result<HashSet<Task>, Box<dyn Error>> {
     // Build the CSV reader and iterate over each record.
     let mut rdr = ReaderBuilder::new()
         .flexible(true)
-        .has_headers(false) // Task ID,Type,Name,Status,Project,Context,Start Date,Due Date,Completion Date,Duration,Flagged,Notes,Tags
+        .has_headers(true) // Task ID,Type,Name,Status,Project,Context,Start Date,Due Date,Completion Date,Duration,Flagged,Notes,Tags
         .from_reader(io::stdin());
     let records = rdr
         .records()
@@ -87,56 +87,66 @@ fn main() {
     // example time: 2019-06-14 02:54:47 +0000
     // Should be this format: %Y-%m-%d %H:%M:%S %z
 
-    let days_requested: i32 = 7; // TODO: get this value from the user input / command line
-    let mut days_ago_to_tasks: HashMap<i32, HashSet<Task>> = HashMap::new();
+    println!("tasks size is {}", tasks.len());
 
+    let days_requested: i32 = 7; // TODO: get this value from the user input / command line
+    let mut days_ago_to_task_count: HashMap<i32, i32> = HashMap::new();
+    days_ago_to_task_count = map_tasks_to_days_ago(tasks);
+
+    println!("len of days ago to task count: {}", days_ago_to_task_count.len());
+
+    for (days, count) in &days_ago_to_task_count {
+        println!("{}: {}", days, count);
+    }
 }
 
 fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<i32, i32> {
     let mut map: HashMap<i32, i32> = HashMap::new();
     let utc_now: DateTime<Utc> = Utc::now();
-    for t in tasks {
+    println!("tasks size in map fn is {}", tasks.len());
+    for t in tasks.iter() {
+        println!("I am doing a thing");
         if t.completion_date.is_some() {
 
-            let t_completion_date: &mut String = &mut t.completion_date.unwrap();
-
+            // let t_completion_date: &mut String = &mut t.completion_date.unwrap();
+            let t_completion_date: String = t.completion_date.as_ref().to_owned().unwrap().to_string();
             // it would be nice to put this in the loop above, but was getting issues with borrowing.
-            if *t_completion_date == String::from("") {
-                break;
+            if *t_completion_date != String::from("") {
+
+                // date_dash_seperated = Vec<&str> = date.spli
+
+                let dt_result = DateTime::parse_from_str(&t_completion_date, "%Y-%m-%d %H:%M:%S %z");
+                let dt: DateTime<FixedOffset>;
+                if dt_result.is_err() {
+                    println!("there was an error parsing the completed date: {:?} ", dt_result.err());
+                    break;
+                } else {
+                    dt = dt_result.unwrap();
+                }
+                println!("dt       : {:?}", t_completion_date);
+                println!("dt object: {:?}", dt);
+
+                // Currently requires the time package, but DateTime said they are going to move to std time soon
+                let mut time_diff: std::time::Duration = utc_now.signed_duration_since(dt).to_std().unwrap();
+                println!("Time diff: {:?}" , time_diff);
+
+                // 86400 seconds in a day
+
+                let mut days_ago_counter: i32 = 0;
+
+                while time_diff > std::time::Duration::from_secs(86400) {
+                    time_diff = time_diff - std::time::Duration::from_secs(86400);
+                    days_ago_counter = days_ago_counter + 1;
+                }
+
+                let days_ago: i32 = days_ago_counter;
+
+                if !map.contains_key(&days_ago) {
+                    map.insert(days_ago, 0);
+                }
+                let current_count: &mut i32 = map.get_mut(&days_ago).unwrap();
+                *current_count += 1;
             }
-            // date_dash_seperated = Vec<&str> = date.spli
-
-            let dt_result = DateTime::parse_from_str(&t_completion_date, "%Y-%m-%d %H:%M:%S %z");
-            let dt: DateTime<FixedOffset>;
-            if dt_result.is_err() {
-                println!("there was an error parsing the completed date: {:?} ", dt_result.err());
-                break;
-            } else {
-                dt = dt_result.unwrap();
-            }
-            println!("dt       : {:?}", t_completion_date);
-            println!("dt object: {:?}", dt);
-
-            // Currently requires the time package, but DateTime said they are going to move to std time soon
-            let mut time_diff: std::time::Duration = utc_now.signed_duration_since(dt).to_std().unwrap();
-            println!("Time diff: {:?}" , time_diff);
-
-            // 86400 seconds in a day
-
-            let mut days_ago_counter: i32 = 0;
-
-            while time_diff > std::time::Duration::from_secs(86400) {
-                time_diff = time_diff - std::time::Duration::from_secs(86400);
-                days_ago_counter = days_ago_counter + 1;
-            }
-
-            let days_ago: i32 = days_ago_counter;
-
-            if !map.contains_key(&days_ago) {
-                map.insert(days_ago, 0);
-            }
-            let current_count: &mut i32 = map.get_mut(&days_ago).unwrap();
-            *current_count += 1;
         }
     }
     return map;
