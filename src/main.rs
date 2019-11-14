@@ -6,7 +6,8 @@ use std::collections::HashSet;
 use time::Duration;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
-
+use std::iter::Filter;
+use std::iter::Iterator;
 use plotters::prelude::*;
 
 use csv::{ReaderBuilder, StringRecord};
@@ -93,14 +94,27 @@ fn main() {
 
     let days_requested: u32 = 7; // TODO: get this value from the user input / command line
     let mut days_ago_to_task_count: HashMap<u32, u32> = HashMap::new();
-    days_ago_to_task_count = map_tasks_to_days_ago(tasks);
+
+    days_ago_to_task_count = map_tasks_to_days_ago(tasks, days_requested); // will only return the number of days requested
+
+    // let max_point: u32 = get_max_count(&days_ago_to_task_count);
+
+
+    let max_point: u32 = *days_ago_to_task_count.iter().max().unwrap_or((&0,&0)).0;
+
+    println!("The max point is {}", max_point);
 
     let points: Vec<u32> = get_points(days_ago_to_task_count, days_requested);
 
-    let max_point: u32 = get_max_point(&points);
-
-    draw_data(points, max_point, days_requested);
+    draw_data(points, days_requested, max_point);
 }
+
+// fn get_max_count(map: &HashMap<u32, u32>) -> u32 {
+//     for e in map.iter() {
+//         println!("e is {:?}", e)
+//     }
+//     0
+// }
 
 fn get_points(map: HashMap<u32, u32>, days_requested: u32) -> Vec<u32> {
     let mut points: Vec<u32> = Vec::new();
@@ -112,10 +126,12 @@ fn get_points(map: HashMap<u32, u32>, days_requested: u32) -> Vec<u32> {
     return points;
 }
 
-fn draw_data(points: Vec<u32>, max_point: u32, days_ago: u32) -> Result<(), Box<dyn std::error::Error>> {
-        let root =
-        BitMapBackend::new("stats.png", (640, 480)).into_drawing_area();
+fn draw_data(points: Vec<u32>, days_ago: u32, max_point: u32) -> Result<(), Box<dyn std::error::Error>> {
 
+
+    // max_point = &100;
+
+    let root = BitMapBackend::new("stats.png", (640, 480)).into_drawing_area();
     root.fill(&WHITE)?;
 
     let mut chart = ChartBuilder::on(&root)
@@ -147,7 +163,7 @@ fn draw_data(points: Vec<u32>, max_point: u32, days_ago: u32) -> Result<(), Box<
 }
 
 
-fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<u32, u32> {
+fn map_tasks_to_days_ago(tasks: HashSet<Task>, days_requested: u32) -> Filter<std::collections::hash_map::Iter<u32, u32> + 'static, u32> {
     let mut map: HashMap<u32, u32> = HashMap::new();
     let utc_now: DateTime<Utc> = Utc::now();
     println!("tasks size in map fn is {}", tasks.len());
@@ -195,5 +211,6 @@ fn map_tasks_to_days_ago(tasks: HashSet<Task>) -> HashMap<u32, u32> {
             }
         }
     }
-    return map;
+
+    return map.iter().filter(|x| *x.0 < days_requested);
 }
