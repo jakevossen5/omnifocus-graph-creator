@@ -162,8 +162,8 @@ fn draw_data(points: Vec<u32>, days_ago: u32, max_point: u32) -> Result<(), Box<
     Ok(())
 }
 
-
-fn map_tasks_to_days_ago(tasks: HashSet<Task>, days_requested: u32) -> Filter<std::collections::hash_map::Iter<u32, u32> + 'static, u32> {
+// Filter<std::collections::hash_map::Iter<u32, u32> + 'static, u32>
+fn map_tasks_to_days_ago(tasks: HashSet<Task>, days_requested: u32) -> std::iter::Iterator<Item=(u32, u32)> {
     let mut map: HashMap<u32, u32> = HashMap::new();
     let utc_now: DateTime<Utc> = Utc::now();
     println!("tasks size in map fn is {}", tasks.len());
@@ -212,5 +212,5 @@ fn map_tasks_to_days_ago(tasks: HashSet<Task>, days_requested: u32) -> Filter<st
         }
     }
 
-    return map.iter().filter(|x| *x.0 < days_requested);
+    return map.iter().filter(|x| *x.0 < days_requested).collect();
 }
