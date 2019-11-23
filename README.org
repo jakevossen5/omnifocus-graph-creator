@@ -1,20 +1,28 @@
 #+TITLE: omnifocus-graph-creator
 
+This project was used to take a csv output from Omnifocus and give you
+information about the history of the tasks you have completed. I got a
+ways into rewriting it in Rust, then the OmniGroup came out with
+[[https://www.omnigroup.com/blog/using-omnifocus-3.4-with-shortcuts][Siri shortcut get items support]], so I am going to create a similar
+program as a Siri shortcut, which should be more elegant than CSV
+exporting and a bunch of weird date math.
+
+* Old README
 Command line utility that lets you analyze the number of tasks you
 have completed in [[https://www.omnigroup.com/omnifocus][Omnifocus]] over time.
 
-* Example
+** Example
 
 [[example.png]]
 
-* Installing
+** Installing
 
 You can install with [[https://brew.sh/][Homebrew]]:
 #+BEGIN_SRC sh:
 brew install jakevossen5/taps/omnifocus-graph-creator
 #+END_SRC
 
-* Usage
+** Usage
 
 ** Getting the Omnifocus CSV
 
